@@ -156,7 +156,7 @@ __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * 
     close(fd);
     return I2C_FUNCTION_RETCODE_COMM_FAIL;
   }
-  read(fd, data, count);
+  read(fd, (uint8_t *)data, count);
   close(fd);
   return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = I2C_FUNCTION_RETCODE_SUCCESS;

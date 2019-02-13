@@ -640,7 +640,8 @@ void aes132_read_counter_config(uint16_t addr){
 	 ret_code = aes132m_execute(AES132_OPCODE_NONCE, 0x01, 0x0000, 0x0000, 12, in_seed, 0, NULL,	0, NULL, 0, NULL,g_tx_buffer, g_rx_buffer);
 	 //printf("Nonce Command\r\n");
 	 aes132_print_command_block(ret_code);
-	 if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
+	 if (ret_code != AES132_DEVICE_RETCODE_SUCCESS)
+	 	return ret_code;
 	 
 	 // Get random number
 	 memcpy(random, &g_rx_buffer[AES132_RESPONSE_INDEX_DATA], 16);
