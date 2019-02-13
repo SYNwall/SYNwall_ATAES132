@@ -103,6 +103,7 @@ __attribute__((weak)) uint8_t i2c_send_bytes(uint8_t  count, const uint8_t * dat
     return I2C_FUNCTION_RETCODE_COMM_FAIL;
   }
   write(fd, data, count);
+  usleep(200);
   close(fd);
 
   return I2C_FUNCTION_RETCODE_SUCCESS;
@@ -158,6 +159,7 @@ __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * 
   }
   read(fd, (uint8_t *)data, count);
   close(fd);
+  usleep(100);
   return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = I2C_FUNCTION_RETCODE_SUCCESS;
   // struct i2c_master_packet packet = {
