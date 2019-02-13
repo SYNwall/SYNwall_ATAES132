@@ -91,6 +91,8 @@ uint8_t i2c_send_stop(void) {
 __attribute__((weak)) uint8_t i2c_send_bytes(uint8_t  count, const uint8_t * data) {
   (void)(count);
   (void)(data);
+  write("/dev/i2c-1", data, count);
+
   return 1;
   // enum status_code statusCode = STATUS_OK;
   // struct i2c_master_packet packet = {
@@ -134,6 +136,7 @@ uint8_t i2c_receive_byte(uint8_t *data) {
 __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * data) {
   (void)(count);
   (void)(data);
+  read("/dev/i2c-1", data, count);
   return 1;
   // enum status_code statusCode = I2C_FUNCTION_RETCODE_SUCCESS;
   // struct i2c_master_packet packet = {
