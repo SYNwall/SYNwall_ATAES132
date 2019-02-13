@@ -619,7 +619,7 @@ void aes132_read_counter_config(uint16_t addr){
 	 //printf("\n\r");
  }
  
- void aes132_nonce(void)
+ uint8_t aes132_nonce(void)
  {	 
 	 //printf("======================== Nonce ========================\r\n");
 	
@@ -652,8 +652,8 @@ void aes132_read_counter_config(uint16_t addr){
 	 nonce_param.nonce   = &g_nonce;
 	 
 	 ret_code = aes132h_nonce(&nonce_param);
-	 if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
-	 
+	 //if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
+	 return ret_code;
 	//  //printf("Calculated Nonce (Software)\r\n");
 	//  //printf("Value          : 0x"); //printf_puthex_array(g_nonce.value, 12); //printf("\r\n");
 	//  //printf("MacCount       : 0x"); //printf_puthex(g_nonce.value[12]); //printf("\r\n");

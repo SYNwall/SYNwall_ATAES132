@@ -2,6 +2,8 @@
 #define _UECC_TESTS_H_
 
 #include "aes132.h"
+#include "keys.h"
+
 #include "aes132_helper.h"
 #include "aes132_impl.h"
 #include "unity.h"

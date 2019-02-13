@@ -31,7 +31,7 @@ void aes132_read_configuration(void);
 void aes132_read_config(uint16_t addr, uint8_t *data);
 void aes132_read_counter_config(uint16_t addr);
 uint8_t aes132_lock_zone(uint8_t mode);
-void aes132_nonce(void);
+uint8_t aes132_nonce(void);
 int aes132_key_create(uint8_t *newKey);
 void aes132_keyload_to_key_memory(uint16_t childKeyID, uint8_t *parentKey, uint8_t *newKey);
 void aes132_encrypt_decrypt_key(uint16_t eKeyId, uint8_t *ekey);

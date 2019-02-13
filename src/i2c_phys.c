@@ -98,16 +98,14 @@ __attribute__((weak)) uint8_t i2c_send_bytes(uint8_t  count, const uint8_t * dat
   (void)(count);
   (void)(data);
   int fd = open("/dev/i2c-1", O_RDWR);
-     if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0)
-	         {
-		       printf("OIOI1");
-			         close(fd);
-   	return I2C_FUNCTION_RETCODE_COMM_FAIL;
-		 }
+  if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0) {
+    close(fd);
+    return I2C_FUNCTION_RETCODE_COMM_FAIL;
+  }
   write(fd, data, count);
   close(fd);
 
- return I2C_FUNCTION_RETCODE_SUCCESS;
+  return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = STATUS_OK;
   // struct i2c_master_packet packet = {
   // 	.address = i2c_address_current >> 1,
@@ -150,15 +148,14 @@ uint8_t i2c_receive_byte(uint8_t *data) {
 __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * data) {
   (void)(count);
   (void)(data);
-  
+
   int fd = open("/dev/i2c-1", O_RDWR);
 
-  
-    if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0)
-	       {
-		              close(fd);
-   	return I2C_FUNCTION_RETCODE_COMM_FAIL;
-	       } 
+
+  if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0) {
+    close(fd);
+    return I2C_FUNCTION_RETCODE_COMM_FAIL;
+  }
   read(fd, data, count);
   close(fd);
   return I2C_FUNCTION_RETCODE_SUCCESS;
