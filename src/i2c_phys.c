@@ -97,14 +97,10 @@ uint8_t i2c_send_stop(void) {
 __attribute__((weak)) uint8_t i2c_send_bytes(uint8_t  count, const uint8_t * data) {
   (void)(count);
   (void)(data);
-  int fd = open("/dev/i2c-1", O_RDWR);
-  if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0) {
-    close(fd);
-    return I2C_FUNCTION_RETCODE_COMM_FAIL;
-  }
+  extern int fd;
+ 
   write(fd, data, count);
-  usleep(200);
-  close(fd);
+  usleep(100 * 1000);
 
   return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = STATUS_OK;
@@ -150,16 +146,11 @@ __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * 
   (void)(count);
   (void)(data);
 
-  int fd = open("/dev/i2c-1", O_RDWR);
+  extern int fd;
 
-
-  if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0) {
-    close(fd);
-    return I2C_FUNCTION_RETCODE_COMM_FAIL;
-  }
   read(fd, (uint8_t *)data, count);
-  close(fd);
-  usleep(100);
+  usleep(100 * 1000);
+
   return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = I2C_FUNCTION_RETCODE_SUCCESS;
   // struct i2c_master_packet packet = {

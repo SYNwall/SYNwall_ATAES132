@@ -11,7 +11,9 @@
 // Read datasheet for more information
 
 #include "tests.h"
-#include<stdio.h>
+
+int fd = 0;
+
 void test_connection()
 {
     uint8_t config[4] = {0};
@@ -72,11 +74,18 @@ void test_authentication()
 
 int main(void) {
 
+  fd = open("/dev/i2c-1", O_RDWR);
+  if (ioctl(fd, I2C_SLAVE, ((uint8_t)0xA0)>>1) < 0) {
+    close(fd);
+    return -1;
+  }
+
   UNITY_BEGIN();
   RUN_TEST(test_connection);
   RUN_TEST(test_write_key);
   RUN_TEST(test_write_data);
   RUN_TEST(test_authentication);
+  close(fd);
 
   return UNITY_END();
 }

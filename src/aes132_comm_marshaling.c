@@ -106,6 +106,12 @@ uint8_t aes132m_execute(uint8_t op_code, uint8_t mode, uint16_t param1, uint16_t
 	}
 
 	// Send command and receive response.
-	return aes132c_send_and_receive(&tx_buffer[0], AES132_RESPONSE_SIZE_MAX,
+	uint8_t tries = 10, ret = AES132_FUNCTION_RETCODE_COMM_FAIL;
+	while(tries-- > 1 && ret != AES132_FUNCTION_RETCODE_SUCCESS)
+	{
+		ret = aes132c_send_and_receive(&tx_buffer[0], AES132_RESPONSE_SIZE_MAX,
 				&rx_buffer[0], AES132_OPTION_DEFAULT);
+	}
+
+	return ret;
 }
