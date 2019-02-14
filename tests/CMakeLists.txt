@@ -13,7 +13,6 @@ target_link_libraries(test_ataes_app
     ataes
     Unity
     gcov
-    asan
 )
 
 target_compile_features(test_ataes_app PRIVATE

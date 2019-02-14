@@ -23,7 +23,7 @@
 #define AES132_I2C_H
 
 #include <stdint.h>
-
+#include "aes132_comm.h"
 // ----------------------------------------------------------------------------------
 // ------------------------ definitions for timeout counters ------------------------
 // ----------- Adjust the values for the timeout counters to your hardware. ---------
@@ -108,25 +108,25 @@
  */
 #define AES132_RETRY_COUNT_RESPONSE_READY ((uint16_t)(AES132_RESPONSE_READY_TIMEOUT * AES132_ITERATIONS_PER_MS_ACK * 2 + 2 * AES132_ITERATIONS_PER_MS_NACK))
 
-// ----------------------------------------------------------------------------------
-// --------------- end of definitions for timeout counter values --------------------
-// ----------------------------------------------------------------------------------
+// // ----------------------------------------------------------------------------------
+// // --------------- end of definitions for timeout counter values --------------------
+// // ----------------------------------------------------------------------------------
 
-// ------------ definitions for library return codes ----------------------------
+// // ------------ definitions for library return codes ----------------------------
 
-#define AES132_FUNCTION_RETCODE_ADDRESS_WRITE_NACK ((uint8_t)0xA0) //!< I2C nack when sending a I2C address for writing
-#define AES132_FUNCTION_RETCODE_ADDRESS_READ_NACK ((uint8_t)0xA1)  //!< I2C nack when sending a I2C address for reading
-#define AES132_FUNCTION_RETCODE_SIZE_TOO_SMALL ((uint8_t)0xA2)	 //!< Count value in response was bigger than buffer.
+// #define AES132_FUNCTION_RETCODE_ADDRESS_WRITE_NACK ((uint8_t)0xA0) //!< I2C nack when sending a I2C address for writing
+// #define AES132_FUNCTION_RETCODE_ADDRESS_READ_NACK ((uint8_t)0xA1)  //!< I2C nack when sending a I2C address for reading
+// #define AES132_FUNCTION_RETCODE_SIZE_TOO_SMALL ((uint8_t)0xA2)	 //!< Count value in response was bigger than buffer.
 
 // The codes below are the same as in the SHA204 library.
-#define AES132_FUNCTION_RETCODE_SUCCESS ((uint8_t)0x00)			   //!< Function succeeded.
-#define AES132_FUNCTION_RETCODE_BAD_CRC_TX ((uint8_t)0xD4)		   //!< Device status register bit 4 (CRC) is set.
-#define AES132_FUNCTION_RETCODE_NOT_IMPLEMENTED ((uint8_t)0xE0)	//!< interface function not implemented
-#define AES132_FUNCTION_RETCODE_DEVICE_SELECT_FAIL ((uint8_t)0xE3) //!< device index out of bounds
-#define AES132_FUNCTION_RETCODE_COUNT_INVALID ((uint8_t)0xE4)	  //!< count byte in response is out of range
-#define AES132_FUNCTION_RETCODE_BAD_CRC_RX ((uint8_t)0xE5)		   //!< incorrect CRC received
-#define AES132_FUNCTION_RETCODE_TIMEOUT ((uint8_t)0xE7)			   //!< Function timed out while waiting for response.
-#define AES132_FUNCTION_RETCODE_COMM_FAIL ((uint8_t)0xF0)		   //!< Communication with device failed.
+// #define AES132_FUNCTION_RETCODE_SUCCESS ((uint8_t)0x00)			   //!< Function succeeded.
+// #define AES132_FUNCTION_RETCODE_BAD_CRC_TX ((uint8_t)0xD4)		   //!< Device status register bit 4 (CRC) is set.
+// #define AES132_FUNCTION_RETCODE_NOT_IMPLEMENTED ((uint8_t)0xE0)	//!< interface function not implemented
+// #define AES132_FUNCTION_RETCODE_DEVICE_SELECT_FAIL ((uint8_t)0xE3) //!< device index out of bounds
+// #define AES132_FUNCTION_RETCODE_COUNT_INVALID ((uint8_t)0xE4)	  //!< count byte in response is out of range
+// #define AES132_FUNCTION_RETCODE_BAD_CRC_RX ((uint8_t)0xE5)		   //!< incorrect CRC received
+// #define AES132_FUNCTION_RETCODE_TIMEOUT ((uint8_t)0xE7)			   //!< Function timed out while waiting for response.
+// #define AES132_FUNCTION_RETCODE_COMM_FAIL ((uint8_t)0xF0)		   //!< Communication with device failed.
 
 void aes132p_enable_interface(void);
 void aes132p_disable_interface(void);

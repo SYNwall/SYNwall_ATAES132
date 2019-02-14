@@ -205,7 +205,7 @@ uint8_t read_memory_test(void) {
 // Send a BlockRead command
 uint8_t block_read_test(void) {
   // ------- Send a BlockRead command and receive its response. -----------------------------
-  aes132_lib_return = aes132m_execute(AES132_BLOCK_READ, 0, word_address, rx_byte_count,
+  aes132_lib_return = aes132m_execute(AES132_OPCODE_BLOCK_READ, 0, word_address, rx_byte_count,
                                       0, NULL, 0, NULL, 0, NULL, 0, NULL, tx_buffer, rx_buffer);
   if (aes132_lib_return != AES132_FUNCTION_RETCODE_SUCCESS) {
     printf("Block Read memory failed!\r\n");

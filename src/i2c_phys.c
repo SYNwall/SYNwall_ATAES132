@@ -4,6 +4,12 @@
  * Created: 6/8/2015 1:43:37 PM
  *  Author: Cempaka
  */
+#include <unistd.h>
+
+#include <unistd.h>				//Needed for I2C port
+#include <fcntl.h>				//Needed for I2C port
+#include <sys/ioctl.h>			//Needed for I2C port
+#include <linux/i2c-dev.h>		//Needed for I2C port
 
 #include "i2c_phys.h"
 //#include "i2c_master.h"
@@ -91,7 +97,12 @@ uint8_t i2c_send_stop(void) {
 __attribute__((weak)) uint8_t i2c_send_bytes(uint8_t  count, const uint8_t * data) {
   (void)(count);
   (void)(data);
-  return 1;
+  extern int fd;
+ 
+  write(fd, data, count);
+  usleep(100 * 1000);
+
+  return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = STATUS_OK;
   // struct i2c_master_packet packet = {
   // 	.address = i2c_address_current >> 1,
@@ -134,7 +145,13 @@ uint8_t i2c_receive_byte(uint8_t *data) {
 __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * data) {
   (void)(count);
   (void)(data);
-  return 1;
+
+  extern int fd;
+
+  read(fd, (uint8_t *)data, count);
+  usleep(100 * 1000);
+
+  return I2C_FUNCTION_RETCODE_SUCCESS;
   // enum status_code statusCode = I2C_FUNCTION_RETCODE_SUCCESS;
   // struct i2c_master_packet packet = {
   // 	.address = i2c_address_current >> 1,
