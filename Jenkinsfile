@@ -3,7 +3,7 @@ node('builder'){
         checkout scm
         version = readFile "${env.WORKSPACE}/version"
         stage('Generating build') {
-            sh 'mkdir -p build && cd build && cmake ../ '
+            sh 'mkdir -p build && cd build && cmake ../  -DCMAKE_TOOLCHAIN_FILE=/opt/toolchain-rpi.&& cmake -DTARGET_GROUP=test '
         }
         dir('build')
         {
