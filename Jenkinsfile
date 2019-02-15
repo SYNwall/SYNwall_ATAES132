@@ -3,7 +3,7 @@ node('builder'){
         checkout scm
         version = readFile "${env.WORKSPACE}/version"
         stage('Generating build') {
-            sh 'mkdir -p build && cd build && cmake ../  -DCMAKE_TOOLCHAIN_FILE=/opt/toolchain-rpi.&& cmake -DTARGET_GROUP=test '
+            sh 'mkdir -p build && cd build && cmake ../  -DCMAKE_TOOLCHAIN_FILE=/opt/toolchain-rpi.cmake && cmake ../ -DTARGET_GROUP=test '
         }
         dir('build')
         {
@@ -25,11 +25,11 @@ node('builder'){
                         "files": [
                             {
                                 "pattern": "src/libataes.a",
-                                "target": "generic-local/release-candidate/ataes132/${version}/libataes.a"
+                                "target": "generic-local/release-candidate/ataes132/${version}/rpi/libataes.a"
                             },
                             {
-                                "pattern": "src/libataesdyn.so",
-                                "target": "generic-local/release-candidate/ataes132/${version}/libataes.so"
+                                "pattern": "tests/test_ataes_app",
+                                "target": "generic-local/release-candidate/ataes132/${version}/rpi/test_ataes_app"
                             }
                         ]
                     }"""
