@@ -240,15 +240,15 @@
 	#define gfm_e(x)     pgm_read_byte(gfmul_e+(x))
 #else // __AVR__
 	static const uint_8t sbox[256]  =  sb_data(f1);
-	static const uint_8t isbox[256] = isb_data(f1);
+__attribute__((used))	static const uint_8t isbox[256] = isb_data(f1);
 
 	static const uint_8t gfm2_sbox[256] = sb_data(f2);
 	static const uint_8t gfm3_sbox[256] = sb_data(f3);
 
-	static const uint_8t gfmul_9[256] = mm_data(f9);
-	static const uint_8t gfmul_b[256] = mm_data(fb);
-	static const uint_8t gfmul_d[256] = mm_data(fd);
-	static const uint_8t gfmul_e[256] = mm_data(fe);
+__attribute__((used))	static const uint_8t gfmul_9[256] = mm_data(f9);
+__attribute__((used))	static const uint_8t gfmul_b[256] = mm_data(fb);
+__attribute__((used))	static const uint_8t gfmul_d[256] = mm_data(fd);
+__attribute__((used))	static const uint_8t gfmul_e[256] = mm_data(fe);
 
 	#define s_box(x)     sbox[(x)]
 	#define is_box(x)    isbox[(x)]
