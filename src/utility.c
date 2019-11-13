@@ -78,6 +78,7 @@ uint8_t hex_to_nibble(uint8_t data)
 **/
 void printf_puthex(uint8_t data_buffer)
 {
+	(void)data_buffer;
 //printf("%.2X",data_buffer);
 }
 
@@ -89,6 +90,7 @@ void printf_puthex(uint8_t data_buffer)
 **/
 void printf_puthex_array(uint8_t* data_buffer, uint8_t length)
 {
+	(void)data_buffer;
 	uint8_t i_data;
 	
 	for (i_data = 0; i_data < length; i_data++)
@@ -106,6 +108,7 @@ void printf_puthex_array(uint8_t* data_buffer, uint8_t length)
 **/
 void printf_puthex_16 (uint16_t data)
 {
+(void)data;
 //printf_puthex((uint8_t) (data >> 8));   //print MSB byte
 //printf_puthex((uint8_t) data );         //print LSB byte
 //printf(" ");
@@ -260,7 +263,7 @@ void aes132_debug_return_puthex(uint8_t return_code)
 **/
 void aes132_debug_readwrite_puthex(uint8_t count, uint8_t return_code, uint8_t *response)
 {
-
+	(void) response;
 	uint8_t i;
 	
 	if (return_code == AES132_FUNCTION_RETCODE_SUCCESS)

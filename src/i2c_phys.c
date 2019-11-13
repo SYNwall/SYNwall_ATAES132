@@ -4,7 +4,7 @@
  * Created: 6/8/2015 1:43:37 PM
  *  Author: Cempaka
  */
-#ifndef EMBEDDED
+#ifndef CORTEX_M
 #include <unistd.h>
 
 #include <unistd.h>				//Needed for I2C port
@@ -99,7 +99,7 @@ __attribute__((weak)) uint8_t i2c_send_bytes(uint8_t  count, const uint8_t * dat
   (void)(count);
   (void)(data);
   
- #ifndef EMBEDDED
+ #ifndef CORTEX_M
   extern int fd;
   write(fd, data, count);
   usleep(100 * 1000);
@@ -149,7 +149,7 @@ __attribute__((weak)) uint8_t i2c_receive_bytes(uint8_t  count, const uint8_t * 
   (void)(count);
   (void)(data);
  
- #ifndef EMBEDDED
+ #ifndef CORTEX_M
   extern int fd;
   read(fd, (uint8_t *)data, count);
   usleep(100 * 1000);
