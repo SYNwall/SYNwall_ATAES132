@@ -71,8 +71,8 @@ void i2c_disable_phys(void);
 uint8_t i2c_select_device_phys(uint8_t device_id);
 uint8_t i2c_send_start(void);
 uint8_t i2c_send_stop(void);
-uint8_t i2c_send_bytes(uint8_t count, const uint8_t *data);
+uint8_t i2c_send_bytes(uint8_t count, const uint8_t *data) __attribute__((weak));
 uint8_t i2c_receive_byte(uint8_t *data);
-uint8_t i2c_receive_bytes(uint8_t count, const uint8_t *data);
+uint8_t i2c_receive_bytes(uint8_t count, const uint8_t *data) __attribute__((weak));
 uint8_t i2c_send_slave_address(uint8_t read);
 #endif /* I2C_PHYS_H_ */

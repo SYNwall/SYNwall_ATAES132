@@ -83,6 +83,7 @@ struct aes132h_nonce_s g_nonce;
  */
 void aes132_print_command_block(int ret_code)
 {
+	((void) ret_code);
 #if defined(AES132SHOWCOMMANDBLOCK)
 	aes132_debug_command_puthex(g_tx_buffer);
 	//printf("\r\n");
@@ -905,7 +906,7 @@ void aes132_encrypt_decrypt_key(uint16_t eKeyId, uint8_t *ekey)
 	// Variable Initialization
 	uint8_t InSeed[12]	= { 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00,0x00, 0x00, 0x02, 0x00 };
 	uint8_t Random[16];
-	uint8_t InData[] = "Hardware-Encrypt-Soft-Decrypt";
+	uint8_t InData[32] = "Hardware-Encrypt-Soft-Decrypt";
 	uint8_t OutData[32];
 	uint8_t InMac[16];
 	uint8_t OutMac[16];
@@ -993,6 +994,8 @@ void aes132_encrypt_decrypt_key(uint16_t eKeyId, uint8_t *ekey)
 
 void aes132_outbound_auth(uint16_t keyid, uint8_t *key, uint8_t mode, uint16_t usage)
 {
+	((void) usage);
+
 	uint8_t ret_code;
 
 	// Scratch-pads

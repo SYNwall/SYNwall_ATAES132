@@ -1049,6 +1049,7 @@ uint8_t aes132h_mac_check_decrypt(struct aes132h_in_out *param)
 
 
 void aes_print_buffer(uint8_t *buff, uint8_t size){
+	((void) buff);
 	for(uint8_t i = 0; i < size;i++){
 		//printf("0x%02X ", buff[i]);
 	}
