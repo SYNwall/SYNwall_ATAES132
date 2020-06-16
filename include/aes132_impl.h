@@ -40,7 +40,7 @@ void aes132_mutual_auth(uint16_t keyid, uint8_t *key, uint8_t mode, uint8_t usag
 void aes132_reset_auth(void);
 void aes132_encrypt_decrypt(void);
 uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key, uint16_t address, uint8_t in_seed[12]);
-void aes132_encread_decrypt(void);
+void aes132_encread_decrypt(uint8_t *key);
 void aes132_write_user_zone(void);
 void aes132_volatile_keyload(void);
 void aes132_volatile_key_encrypt_decrypt(void);

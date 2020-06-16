@@ -18,6 +18,7 @@
  *  \date   June 12, 2013
  */
 
+#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include "aes132_helper.h"
@@ -1057,50 +1058,50 @@ void aes_print_buffer(uint8_t *buff, uint8_t size){
 }
 
 void aes_print_rc(int ret_value) {
-	//printf(" Return Code (");
+	printf(" Return Code (");
 	switch (ret_value) {
 		case 0:
-		//printf("SUCCESS");
+		printf("SUCCESS");
 		break;
 		case 0x02:
-		//printf("BOUNDRY_ERROR");
+		printf("BOUNDRY_ERROR");
 		break;
 		case 0x04:
-		//printf("RW_CONFING");
+		printf("RW_CONFING");
 		break;
 		case 0x08:
-		//printf("BAD_ADDRESS");
+		printf("BAD_ADDRESS");
 		break;
 		case 0x10:
-		//printf("COUNT_ERROR");
+		printf("COUNT_ERROR");
 		break;
 		case 0x20:
-		//printf("NONCE_ERROR");
+		printf("NONCE_ERROR");
 		break;
 		case 0x40:
-		//printf("MAC_ERROR");
+		printf("MAC_ERROR");
 		break;
 		case 0x50:
-		//printf("PARSE_ERROR");
+		printf("PARSE_ERROR");
 		break;
 		case 0x60:
-		//printf("DARA_MATCH");
+		printf("DARA_MATCH");
 		break;
 		case 0x70:
-		//printf("LOCK_ERROR");
+		printf("LOCK_ERROR");
 		break;
 		case 0x80:
-		//printf("KEY_ERROR");
+		printf("KEY_ERROR");
 		break;
 		case 0xE2:
-		//printf("INVALID PARAM");
+		printf("INVALID PARAM");
 		break;
 		default:
-		//printf("unknown error %d \n\r", ret_value);
+		printf("unknown error %d \n\r", ret_value);
 		break;
 
 	}
-	//printf(")\n\r");
+	printf(")\n");
 }
 
 void aes132_print_zone_addresses(){

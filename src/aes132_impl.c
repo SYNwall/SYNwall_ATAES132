@@ -4,7 +4,10 @@
  * Created: 9/15/2018 7:11:20 AM
  *  Author: pvallone
  */ 
- #include "aes132_impl.h"
+
+#include <stdio.h>
+
+#include "aes132_impl.h"
 struct aes132a_details myDetails;
 
 uint8_t g_tx_buffer[AES132_COMMAND_SIZE_MAX];
@@ -1258,11 +1261,11 @@ uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key,
 	struct aes132h_nonce_in_out nonce_param;
 	struct aes132h_in_out mac_compute_encrypt_param;
 	
-	//printf("================== Test Encrypt & EncWrite =================\r\n");
+	printf("================== Test Encrypt & EncWrite =================\r\n");
 
 	// 1)	Send Random Nonce Command
 	ret_code	= aes132m_execute(AES132_OPCODE_NONCE, 0x01, 0x0000, 0x0000, 12, in_seed, 0, NULL, 0, NULL, 0, NULL, g_tx_buffer, g_rx_buffer);
-	//printf("Nonce Command\r\n");
+	printf("Nonce Command\n");
 	aes132_print_command_block(ret_code);
 	if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return ret_code;
 	
@@ -1279,11 +1282,15 @@ uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key,
 	ret_code = aes132h_nonce(&nonce_param);
 	if (ret_code != AES132_FUNCTION_RETCODE_SUCCESS) return ret_code;
 	
-	//printf("Calculated Nonce (Software)\r\n");
-	//printf("Value          : 0x"); //printf_puthex_array(g_nonce.value, 12); //printf("\r\n");
-	//printf("MacCount       : 0x"); //printf_puthex(g_nonce.value[12]); //printf("\r\n");
-	//printf("Valid          : 0x"); //printf_puthex(g_nonce.valid); //printf("\r\n");
-	//printf("Random         : 0x"); //printf_puthex(g_nonce.random); //printf("\r\n\n");
+	printf("Calculated Nonce (Software)\n");
+	printf("Value          : 0x"); 
+        printf_puthex_array(g_nonce.value, 12); printf("\n");
+	printf("MacCount       : 0x"); 
+        printf_puthex(g_nonce.value[12]); printf("\n");
+	printf("Valid          : 0x"); 
+        printf_puthex(g_nonce.valid); printf("\n");
+	printf("Random         : 0x"); 
+        printf_puthex(g_nonce.random); printf("\n\n");
 	
 	mac_compute_encrypt_param.opcode        = AES132_OPCODE_ENC_WRITE;
 	mac_compute_encrypt_param.mode          = 0x00;
@@ -1303,11 +1310,15 @@ uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key,
 	ret_code	= aes132h_mac_compute_encrypt(&mac_compute_encrypt_param);
 	if (ret_code != AES132_FUNCTION_RETCODE_SUCCESS) return ret_code;
 	
-	//printf("Encrypted MAC & Data (Software)\r\n");
-	//printf("InData         : 0x"); //printf_puthex_array(in_data, sizeof in_data); //printf("\r\n");
-	//printf("OutMac         : 0x"); //printf_puthex_array(OutMac, 16); //printf("\r\n");
-	//printf("OutData        : 0x"); //printf_puthex_array(out_data, 16); //printf("\r\n");
-	//printf("MacCount       : 0x"); //printf_puthex(g_nonce.value[12]); //printf("\r\n\n");
+	printf("Encrypted MAC & Data (Software)\n");
+	printf("InData         : 0x"); 
+        printf_puthex_array(in_data, sizeof in_data); printf("\n");
+	printf("OutMac         : 0x"); 
+        printf_puthex_array(OutMac, 16); printf("\n");
+	printf("OutData        : 0x"); 
+        printf_puthex_array(out_data, 16); printf("\n");
+	printf("MacCount       : 0x"); 
+        printf_puthex(g_nonce.value[12]); printf("\n\n");
 	
 	// 3)	Send EncWrite Command
 	// Copy encrypted data and encrypted mac to local variable
@@ -1315,7 +1326,7 @@ uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key,
 	memcpy(in_data, out_data, in_size);
 
 	ret_code	= aes132m_execute(AES132_OPCODE_ENC_WRITE, 0x00, address, in_size, sizeof(InMac), InMac, in_size, in_data, 0, NULL, 0, NULL, g_tx_buffer, g_rx_buffer);
-	//printf("EncWrite Command\r\n");
+	printf("EncWrite Command\r\n");
 	aes132_print_command_block(ret_code);
 	aes_print_rc(ret_code);
 	return ret_code;
@@ -1323,7 +1334,7 @@ uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key,
 /** \brief
  *	Encrypt Read to AES132 Memory then Decrypt it using helper function
  */
-void aes132_encread_decrypt(void)
+void aes132_encread_decrypt(uint8_t *key)
 {
 	// Variable Initialization
 	uint8_t InSeed[12]	= {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00};
@@ -1337,11 +1348,11 @@ void aes132_encread_decrypt(void)
 	struct aes132h_nonce_in_out nonce_param;
 	struct aes132h_in_out mac_check_decrypt_param;
 	
-	//printf("================== Test EncRead & Decrypt ==================\r\n");
+	printf("================== Test EncRead & Decrypt ==================\n");
 	
 	// 1)	Send Random Nonce Command
 	ret_code	= aes132m_execute(AES132_OPCODE_NONCE, 0x01, 0x0000, 0x0000, sizeof(InSeed), InSeed, 0, NULL, 0, NULL, 0, NULL, g_tx_buffer, g_rx_buffer);
-	//printf("Nonce Command\r\n");
+	printf("Nonce Command\n");
 	aes132_print_command_block(ret_code);
 	if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
 	
@@ -1351,7 +1362,7 @@ void aes132_encread_decrypt(void)
 	// 2)	Send EncRead Command
 	ret_code	= aes132m_execute(AES132_OPCODE_ENC_READ, 0x00, AES132_USER_ZONE_ADDR(0), 0x0020,
 	0, NULL, 0, NULL, 0, NULL, 0, NULL, g_tx_buffer, g_rx_buffer);
-	//printf("EncRead Command\r\n");
+	printf("EncRead Command\n");
 	aes132_print_command_block(ret_code);
 	if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
 	
@@ -1369,11 +1380,11 @@ void aes132_encread_decrypt(void)
 	ret_code = aes132h_nonce(&nonce_param);
 	if (ret_code != AES132_FUNCTION_RETCODE_SUCCESS) return;
 	
-	//printf("Calculated Nonce (Software)\r\n");	
-	//printf("Value          : 0x"); //printf_puthex_array(g_nonce.value, 12); //printf("\r\n");
-	//printf("MacCount       : 0x"); //printf_puthex(g_nonce.value[12]); //printf("\r\n");
-	//printf("Valid          : 0x"); //printf_puthex(g_nonce.valid); //printf("\r\n");	
-	//printf("Random         : 0x"); //printf_puthex(g_nonce.random); //printf("\r\n\n");
+	printf("Calculated Nonce (Software)\n");	
+	printf("Value          : 0x"); printf_puthex_array(g_nonce.value, 12); printf("\n");
+	printf("MacCount       : 0x"); printf_puthex(g_nonce.value[12]); printf("\n");
+	printf("Valid          : 0x"); printf_puthex(g_nonce.valid); printf("\n");	
+	printf("Random         : 0x"); printf_puthex(g_nonce.random); printf("\n\n");
 	
 	// Save encrypted data and encrypted mac to local variable
 	memcpy(InMac, OutMac, 16);
@@ -1387,7 +1398,7 @@ void aes132_encread_decrypt(void)
 	mac_check_decrypt_param.usage_counter = NULL;
 	mac_check_decrypt_param.serial_num    = NULL;
 	mac_check_decrypt_param.small_zone    = NULL;
-	mac_check_decrypt_param.key           = key00;
+	mac_check_decrypt_param.key           = key;
 	mac_check_decrypt_param.nonce         = &g_nonce;
 	mac_check_decrypt_param.in_mac        = InMac;
 	mac_check_decrypt_param.out_mac       = NULL;
@@ -1398,11 +1409,11 @@ void aes132_encread_decrypt(void)
 	aes_print_rc(ret_code);
 	if (ret_code != AES132_FUNCTION_RETCODE_SUCCESS) return;
 	
-	//printf("Decrypted Data (Software)\r\n");
-	//printf("OutData        : 0x"); //printf_puthex_array(OutData, 16); //printf("\r\n");
-	//printf("MacCount       : 0x"); //printf_puthex(g_nonce.value[12]); //printf("\r\n\n");
+	printf("Decrypted Data (Software)\r\n");
+	printf("OutData        : 0x"); printf_puthex_array(OutData, 16); printf("\n");
+	printf("MacCount       : 0x"); printf_puthex(g_nonce.value[12]); printf("\n\n");
 	
-	//printf("Plain Text     : %s\n\r", OutData);
+	printf("Plain Text     : %s\n\r", OutData);
 
 }
 
