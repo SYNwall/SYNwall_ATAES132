@@ -575,21 +575,27 @@ void aes132_personalize(void)
 
  /** \brief Reads Key config, User zone config, counter config  */
 void aes132_read_configuration(void){
+         
+         char resp[AES132_RESPONSE_SIZE_MAX];
 	 
-	 //printf("** Key Config Read **\n\r");
+	 printf("** Key Config Read **\n\r");
 
 	 for(int i = 0; i < 16; i++){
-		 //printf("Key Config 0x%02X - %d: ", AES132_KEY_CONFIG_ADDR(i), i);
-		//  aes132_read_config(AES132_KEY_CONFIG_ADDR(i));
+		 printf("Key Config 0x%02X - %d: ", AES132_KEY_CONFIG_ADDR(i), i);
+		 aes132_read_config(AES132_KEY_CONFIG_ADDR(i), resp);
+		 printf("0x%02X 0x%02X 0x%02X 0x%02X\n", resp[0], resp[1],
+                                                         resp[2], resp[3]);
 	 }
-	 //printf("** Zone Config Read **\n\r");
+	 printf("** Zone Config Read **\n\r");
 	 for(int i = 0; i < 16; i++){
-		 //printf("User Zone Config 0x%02X - %d: ", AES132_ZONE_CONFIG_ADDR(i), i);
-		//  aes132_read_config(AES132_ZONE_CONFIG_ADDR(i));
+		 printf("User Zone Config 0x%02X - %d: ", AES132_ZONE_CONFIG_ADDR(i), i);
+		 aes132_read_config(AES132_ZONE_CONFIG_ADDR(i), resp);
+		 printf("0x%02X 0x%02X 0x%02X 0x%02X\n", resp[0], resp[1],
+                                                         resp[2], resp[3]);
 	 }
-	 //printf("**** Counter Config ****\n\r");
+	 printf("**** Counter Config ****\n\r");
 	 for(int i = 0; i < 16; i++){
-		 //printf("Counter Config 0x%02X - %d: ", AES132_COUNTER_CONFIG_ADDR(i), i);
+		 printf("Counter Config 0x%02X - %d: ", AES132_COUNTER_CONFIG_ADDR(i), i);
 		 aes132_read_counter_config(AES132_COUNTER_CONFIG_ADDR(i));
 	 }
  }
@@ -604,8 +610,7 @@ void aes132_read_config(uint16_t addr, uint8_t *data){
 	 g_tx_buffer, g_rx_buffer);
 	 if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
 	 
-	memcpy(data, &g_rx_buffer[2], g_rx_buffer[0] - 4);
-	 //printf("\n\r");
+	 memcpy(data, &g_rx_buffer[2], g_rx_buffer[0] - 4);
  }
 
 void aes132_read_counter_config(uint16_t addr){
@@ -618,9 +623,9 @@ void aes132_read_counter_config(uint16_t addr){
 	 if (ret_code != AES132_DEVICE_RETCODE_SUCCESS) return;
 	 
 	 for(uint8_t a = 2; a < 4; a++){
-		 //printf("0x%02X ", g_rx_buffer[a]);
+		 printf("0x%02X ", g_rx_buffer[a]);
 	 }
-	 //printf("\n\r");
+	 printf("\n");
  }
  
  uint8_t aes132_nonce(void)
@@ -1334,7 +1339,7 @@ uint8_t aes132_encrypt_encwrite(uint8_t *in_data, uint8_t in_size, uint8_t *key,
 /** \brief
  *	Encrypt Read to AES132 Memory then Decrypt it using helper function
  */
-void aes132_encread_decrypt(uint8_t *key)
+void aes132_encread_decrypt(uint8_t *key, uint16_t address)
 {
 	// Variable Initialization
 	uint8_t InSeed[12]	= {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00};
@@ -1360,7 +1365,7 @@ void aes132_encread_decrypt(uint8_t *key)
 	memcpy(Random, &g_rx_buffer[AES132_RESPONSE_INDEX_DATA], 16);
 	
 	// 2)	Send EncRead Command
-	ret_code	= aes132m_execute(AES132_OPCODE_ENC_READ, 0x00, AES132_USER_ZONE_ADDR(0), 0x0020,
+	ret_code	= aes132m_execute(AES132_OPCODE_ENC_READ, 0x00, address, 0x0020,
 	0, NULL, 0, NULL, 0, NULL, 0, NULL, g_tx_buffer, g_rx_buffer);
 	printf("EncRead Command\n");
 	aes132_print_command_block(ret_code);
@@ -1392,7 +1397,7 @@ void aes132_encread_decrypt(uint8_t *key)
 
 	mac_check_decrypt_param.opcode        = AES132_OPCODE_ENC_READ;
 	mac_check_decrypt_param.mode          = 0x00;
-	mac_check_decrypt_param.param1        = AES132_USER_ZONE_ADDR(0);
+	mac_check_decrypt_param.param1        = address;
 	mac_check_decrypt_param.param2        = sizeof(InData);
 	mac_check_decrypt_param.count_value   = NULL;
 	mac_check_decrypt_param.usage_counter = NULL;
@@ -1405,7 +1410,7 @@ void aes132_encread_decrypt(uint8_t *key)
 	mac_check_decrypt_param.in_data       = InData;
 	mac_check_decrypt_param.out_data      = OutData;
 	
-	ret_code	= aes132h_mac_check_decrypt(&mac_check_decrypt_param);
+	ret_code = aes132h_mac_check_decrypt(&mac_check_decrypt_param);
 	aes_print_rc(ret_code);
 	if (ret_code != AES132_FUNCTION_RETCODE_SUCCESS) return;
 	
