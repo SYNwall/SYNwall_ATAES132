@@ -18,9 +18,10 @@ uint8_t term_disable_echo(void);
 uint8_t term_enable_echo(void);
 void read_noecho(char *inkey, int len, char *prompt);
 uint8_t test_auth(void);
-void load_key_array(char *data_buffer, uint8_t length);
+uint8_t load_key_array(char *data_buffer, uint8_t length);
 uint8_t authentication(uint8_t key_address, uint8_t *key);
 uint8_t store_PSK(void);
+uint8_t load_PSK(void);
 uint8_t test_connection(void);
 
 //I2C file descriptor

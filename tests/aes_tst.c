@@ -3,7 +3,7 @@
 //    git clone https://github.com/RiddleAndCode/ATAES132
 //
 // Compile with 
-//    gcc -g aes_tst.c -o aes_tst -I ../include/ libataes.a
+//    gcc -g aes_tst.c -o aes_tst -I ../include/ ../build/src/libataes.a
 //
 // If library with debug is needed, compile with
 //    cd build
@@ -210,10 +210,10 @@ int main(void)
   for (int i = 0; i < 12; i++) {
     in_seed[i] = rand() % 0xFF;
   }
-  aes132_encrypt_encwrite(in_data,32,mykey00,0,in_seed);
+  aes132_encrypt_encwrite(in_data,32,mykey00,0,in_seed,1);
 
   // EncRead
-  aes132_encread_decrypt(mykey00,0);
+  aes132_encread_decrypt(mykey00,0,NULL,1);
 
   printf("\n\n===== Test 2 =====\n\n");
 
@@ -223,8 +223,8 @@ int main(void)
   for (int i = 0; i < 12; i++) {
     in_seed[i] = rand() % 0xFF;
   }
-  aes132_encrypt_encwrite(in_data2,32,mykey00,256,in_seed);
-  aes132_encread_decrypt(mykey00,256);
+  aes132_encrypt_encwrite(in_data2,32,mykey00,32,in_seed,1);
+  aes132_encread_decrypt(mykey00,32,NULL,1);
 
   // Deauth
   aes132_reset_auth();

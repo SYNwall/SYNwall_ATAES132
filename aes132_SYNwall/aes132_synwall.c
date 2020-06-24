@@ -61,25 +61,31 @@ void read_noecho(char *inkey, int len, char *prompt)
   term_enable_echo();
 }
 
-void load_key_array(char *data_buffer, uint8_t length)
+uint8_t load_key_array(char *data_buffer, uint8_t length)
 {
 
   size_t count;
   uint8_t c;
 
+  // FIXME: do some sanitization: even number of char, only 09af
+  if ( strlen(data_buffer) != 32 )
+  {
+    fprintf(stderr,"[!] Key must be 32 HEX chars\n");
+    return(EXIT_FAILURE);
+  }
+
   char *pos = data_buffer;
 
-  // FIXME: do some sanitization: even number of char, only 09af
-
-  for (count = 0; count < length; count++)
+  for (count = 0; count < strlen(data_buffer) / 2; count++)
   {
     sscanf(pos, "%2hhx", &SYNkey00[count]);
     pos += 2;
   }
 
   // Discard other STDIN chars
-  // FIXME: there is a delay when not 32 chars...
-  while((c = getchar()) != '\n' && c != EOF);
+  while((c = fgetc(stdin)) != '\n' && c != EOF);
+
+  return(EXIT_SUCCESS);
 }
 
 uint8_t test_auth(void)
@@ -87,7 +93,10 @@ uint8_t test_auth(void)
   char inkey[INKEY_BUFFER] = { 0 };
 
   read_noecho(inkey, INKEY_BUFFER, key_prompt);
-  load_key_array(inkey, INKEY_BUFFER);
+  if ( load_key_array(inkey, INKEY_BUFFER) != 0 )
+  {
+    return(EXIT_FAILURE);
+  }
 
   return(authentication(0,(uint8_t *) SYNkey00));
 }
@@ -136,9 +145,15 @@ uint8_t store_PSK(void)
   char inkey[INKEY_BUFFER] = { 0 };
   char psk[PSK_BUFFER] = { 0 };
 
+  int psklen;
+  int mem_addr = 0;
+
   // Ask the key (authentication is required to store keys)
   read_noecho(inkey, INKEY_BUFFER, key_prompt);
-  load_key_array(inkey, INKEY_BUFFER);
+  if ( load_key_array(inkey, INKEY_BUFFER) != 0 )
+  {
+    return(EXIT_FAILURE);
+  }
 
   if ( authentication(0,(uint8_t *) SYNkey00) != 0 )
   {
@@ -148,6 +163,57 @@ uint8_t store_PSK(void)
   // Ask the PSK
   read_noecho(psk, PSK_BUFFER, psk_prompt);
 
+  // Check PSK min length
+  psklen = strlen(psk);
+  if ( psklen < 32 )
+  {
+    fprintf(stderr,"[!] PSK must be at least 32 chars\n");
+    return(EXIT_FAILURE);
+  }
+
+  // Store PSK (chunck of 32 bytes)
+  
+  uint8_t in_seed[12] = {0};
+  for (int i = 0; i < 12; i++) {
+    in_seed[i] = rand() % 0xFF;
+  }
+  aes132_encrypt_encwrite((uint8_t *) psk,32,SYNkey00,mem_addr,in_seed,0);
+  psklen -= 32;
+  while ( ( psklen % 32 ) > 0 )
+  {
+    mem_addr += 32;
+    psklen -= 32;
+    if ( psklen < 0 )
+    {
+      psklen = 0;
+    }
+    aes132_encrypt_encwrite((uint8_t *) psk + mem_addr,32,SYNkey00,mem_addr,in_seed,0);
+  }
+
+  return(EXIT_SUCCESS);
+}
+
+uint8_t load_PSK(void)
+{
+  char inkey[INKEY_BUFFER] = { 0 };
+  char psk[PSK_BUFFER] = { 0 };
+
+  int psklen;
+  int mem_addr = 0;
+
+  // Ask the key (authentication is required to store keys)
+  read_noecho(inkey, INKEY_BUFFER, key_prompt);
+  if ( load_key_array(inkey, INKEY_BUFFER) != 0 )
+  {
+    return(EXIT_FAILURE);
+  }
+
+  if ( authentication(0,(uint8_t *) SYNkey00) != 0 )
+  {
+    return(EXIT_FAILURE);
+  }
+
+  return(EXIT_SUCCESS);
 }
 
 int main(int argc, char *argv[])
@@ -179,15 +245,16 @@ int main(int argc, char *argv[])
     switch (opt)
     {
       case '?':
-        fprintf(stderr, "%s: Unexpected option: %c\n", argv[0], optopt);
+        fprintf(stderr, "[!] %s: Unexpected option: %c\n", argv[0], optopt);
         res = 1;
         break;
       case ':':
-        fprintf(stderr, "%s: Missing value for: %c\n", argv[0], optopt);
+        fprintf(stderr, "[!] %s: Missing value for: %c\n", argv[0], optopt);
         res = 1;
         break;
       case 'l':
         // Load PSK in SYNwall
+        res = load_PSK();
         break;
       case 'w':
         // Store a new PSK
