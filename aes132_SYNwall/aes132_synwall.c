@@ -235,6 +235,9 @@ uint8_t load_PSK(void)
     return(EXIT_FAILURE);
   }
 
+  // Clean up temporary buffer
+  explicit_bzero(inkey,INKEY_BUFFER);
+
   // Read PSK from EEPROM (in 32 bytes chunks)
   aes132_encread_decrypt(SYNkey00,mem_addr,(uint8_t *) psk,0);
   chunck_len = strlen(psk);
@@ -351,6 +354,9 @@ int main(int argc, char *argv[])
 
   // Clean up memory
   explicit_bzero(SYNkey00,16);
+
+  // Core dump
+  *((int*)NULL) = 1;
 
   if ( res != 0)
   {

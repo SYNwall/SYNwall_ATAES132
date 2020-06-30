@@ -1466,8 +1466,8 @@ uint8_t aes132_encread_decrypt(uint8_t *key, uint16_t address, uint8_t *out_data
 		printf("Plain Text     : %s\n\r", OutData);
 	}
 
-    if ( out_data != NULL )
-    {
+	if ( out_data != NULL )
+	{
 		memcpy(out_data,OutData,32);
 	}
 
