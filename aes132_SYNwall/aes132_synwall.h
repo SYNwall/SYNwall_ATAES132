@@ -12,6 +12,7 @@
 
 #define INKEY_BUFFER  33
 #define PSK_BUFFER   256
+#define SYNWALL_PSK_FILE  "/sys/module/SYNwall/parameters/psk"
 
 void print_help(void);
 uint8_t term_disable_echo(void);
@@ -23,6 +24,7 @@ uint8_t authentication(uint8_t key_address, uint8_t *key);
 uint8_t store_PSK(void);
 uint8_t load_PSK(void);
 uint8_t test_connection(void);
+uint8_t inject_PSK(char *psk, int len);
 
 //I2C file descriptor
 int fd = 0;

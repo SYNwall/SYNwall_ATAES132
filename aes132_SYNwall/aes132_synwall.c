@@ -16,6 +16,12 @@
 
 #include "aes132_synwall.h"
 
+
+// FIXME: add a secure wiping for memory (explicit_bzero)
+// To test make a core dump
+//       *((int*)NULL) = 1;
+//        ulimit -c 99999999
+
 void print_help(void)
 {
 
@@ -98,6 +104,9 @@ uint8_t test_auth(void)
     return(EXIT_FAILURE);
   }
 
+  // Clean temporary buffer
+  explicit_bzero(inkey,INKEY_BUFFER);
+
   return(authentication(0,(uint8_t *) SYNkey00));
 }
 
@@ -152,15 +161,22 @@ uint8_t store_PSK(void)
   read_noecho(inkey, INKEY_BUFFER, key_prompt);
   if ( load_key_array(inkey, INKEY_BUFFER) != 0 )
   {
+    // Clean up temporary buffer
+    explicit_bzero(inkey,INKEY_BUFFER);
     return(EXIT_FAILURE);
   }
 
   if ( authentication(0,(uint8_t *) SYNkey00) != 0 )
   {
+    // Clean up temporary buffer
+    explicit_bzero(inkey,INKEY_BUFFER);
   	return(EXIT_FAILURE);
   }
+  // Clean up temporary buffer
+  explicit_bzero(inkey,INKEY_BUFFER);
 
   // Ask the PSK
+  // TODO: may be we can accept just hex representation of key...
   read_noecho(psk, PSK_BUFFER, psk_prompt);
 
   // Check PSK min length
@@ -190,6 +206,8 @@ uint8_t store_PSK(void)
     aes132_encrypt_encwrite((uint8_t *) psk + mem_addr,32,SYNkey00,mem_addr,in_seed,0);
   }
 
+  // Clean up temporary buffer
+  explicit_bzero(psk,PSK_BUFFER);
   return(EXIT_SUCCESS);
 }
 
@@ -198,21 +216,71 @@ uint8_t load_PSK(void)
   char inkey[INKEY_BUFFER] = { 0 };
   char psk[PSK_BUFFER] = { 0 };
 
-  int psklen;
+  int chunck_len;
   int mem_addr = 0;
 
-  // Ask the key (authentication is required to store keys)
+  // Ask the key (authentication is required to read keys)
   read_noecho(inkey, INKEY_BUFFER, key_prompt);
   if ( load_key_array(inkey, INKEY_BUFFER) != 0 )
   {
+    // Clean up temporary buffer
+    explicit_bzero(inkey,INKEY_BUFFER);
     return(EXIT_FAILURE);
   }
 
   if ( authentication(0,(uint8_t *) SYNkey00) != 0 )
   {
+    // Clean up temporary buffer
+    explicit_bzero(inkey,INKEY_BUFFER);
     return(EXIT_FAILURE);
   }
 
+  // Read PSK from EEPROM (in 32 bytes chunks)
+  aes132_encread_decrypt(SYNkey00,mem_addr,(uint8_t *) psk,0);
+  chunck_len = strlen(psk);
+  
+  while ( chunck_len >= 32 && mem_addr < PSK_BUFFER )
+  {
+    mem_addr += 32;
+    aes132_encread_decrypt(SYNkey00,mem_addr,(uint8_t *) psk + mem_addr,0);
+    chunck_len = strlen(psk+mem_addr);
+  }
+  psk[mem_addr + chunck_len - 1] = '\0';
+
+  // Load the PSK in the SYNwall module
+  if ( inject_PSK(psk, strlen(psk)) == EXIT_FAILURE )
+  {
+    // Clean up temporary buffer
+    explicit_bzero(psk,PSK_BUFFER);
+    return(EXIT_FAILURE);
+  }
+
+  // Clean up temporary buffer
+  explicit_bzero(psk,PSK_BUFFER);
+  return(EXIT_SUCCESS);
+}
+
+uint8_t inject_PSK(char *psk, int len)
+{
+  // This is the paramter file used to inject the PSK
+  //     "/sys/module/SYNwall/parameters/psk"
+  int fsynwall;
+
+  fsynwall = open(SYNWALL_PSK_FILE, O_WRONLY);
+  if (fsynwall == -1)
+  {
+    fprintf(stderr, "[!] Cannot open the SYNwall parameters file.\n"); 
+    return(EXIT_FAILURE);
+  }
+
+  if ( write(fsynwall,psk,len) <= 0 )
+  {
+    fprintf(stderr, "[!] Cannot write to the SYNwall parameters file.\n"); 
+    close(fsynwall);
+    return(EXIT_FAILURE);
+  }
+
+  close(fsynwall);
   return(EXIT_SUCCESS);
 }
 
@@ -281,6 +349,9 @@ int main(int argc, char *argv[])
 
   close(fd);
 
+  // Clean up memory
+  explicit_bzero(SYNkey00,16);
+
   if ( res != 0)
   {
     return(EXIT_FAILURE);
@@ -293,4 +364,5 @@ int main(int argc, char *argv[])
 
 
 // da486088e264ff4945e9a9fe38b5841f
+// 12345678901234567890123456789012
 // da486088e264ff4945e9a9fe38b5841c
