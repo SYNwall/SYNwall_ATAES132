@@ -1,2 +1,4 @@
 build
 tests/.gdb_history
+aes132_SYNwall/.gdb_history
+.gitignore
