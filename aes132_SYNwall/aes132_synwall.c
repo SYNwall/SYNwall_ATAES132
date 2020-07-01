@@ -16,12 +16,6 @@
 
 #include "aes132_synwall.h"
 
-
-// FIXME: add a secure wiping for memory (explicit_bzero)
-// To test make a core dump
-//       *((int*)NULL) = 1;
-//        ulimit -c 99999999
-
 void print_help(void)
 {
 
@@ -60,10 +54,18 @@ void read_noecho(char *inkey, int len, char *prompt)
 {
   term_disable_echo();
 
+  // Disable buffering to avoid persistence in memory...
+  // I know, it may not work, but with the tests done
+  // so far it did :-)
+  setvbuf(stdin, NULL, _IONBF, 0);
+
   printf(prompt);
   fgets(inkey, len, stdin);
   inkey[strlen(inkey)] = 0;
 
+  // FIXME
+  fseek(stdin,0,SEEK_END);
+  
   term_enable_echo();
 }
 
@@ -99,6 +101,7 @@ uint8_t test_auth(void)
   char inkey[INKEY_BUFFER] = { 0 };
 
   read_noecho(inkey, INKEY_BUFFER, key_prompt);
+ 
   if ( load_key_array(inkey, INKEY_BUFFER) != 0 )
   {
     return(EXIT_FAILURE);
@@ -355,8 +358,8 @@ int main(int argc, char *argv[])
   // Clean up memory
   explicit_bzero(SYNkey00,16);
 
-  // Core dump
-  *((int*)NULL) = 1;
+  // Generate core dump (set "ulimit -c unlimited" before) 
+  // *((int*)NULL) = 1;
 
   if ( res != 0)
   {
