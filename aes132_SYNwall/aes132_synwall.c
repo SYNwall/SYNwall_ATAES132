@@ -293,7 +293,7 @@ uint8_t inject_PSK(char *psk, int len)
 int main(int argc, char *argv[])
 {
 
-  uint8_t res;
+  uint8_t res = 0;
 
   // Open the ATAE132 connection via I2C
   fd = open("/dev/i2c-1", O_RDWR);
