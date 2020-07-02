@@ -63,9 +63,9 @@ void read_noecho(char *inkey, int len, char *prompt)
   fgets(inkey, len, stdin);
   inkey[strlen(inkey)] = 0;
 
-  // FIXME
+  // Another kludge to remove references from buffers...
   fseek(stdin,0,SEEK_END);
-  
+
   term_enable_echo();
 }
 
@@ -372,6 +372,4 @@ int main(int argc, char *argv[])
 }
 
 
-// da486088e264ff4945e9a9fe38b5841f
-// 12345678901234567890123456789012
-// da486088e264ff4945e9a9fe38b5841c
+// Test key: da486088e264ff4945e9a9fe38b5841f
