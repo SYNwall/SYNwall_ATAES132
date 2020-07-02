@@ -36,7 +36,7 @@ Usage: aes312_synwall <OPTIONS>
         -a          Test Authentication
 ```
 
-The usage of the EEPROM is not really straightforward, you may want to review the [DataSheet](http://ww1.microchip.com/downloads/en/devicedoc/Atmel-8760-CryptoAuth-ATAES132-Datasheet.pdf) and to the [tests](https://github.com/cecio/ATAES132/tree/master/tests) folder to see some examples (in particular the aes_tst.c file).
+The usage of the EEPROM is not really straightforward, you may want to review the [DataSheet](http://ww1.microchip.com/downloads/en/devicedoc/Atmel-8760-CryptoAuth-ATAES132-Datasheet.pdf) and the [tests](https://github.com/cecio/ATAES132/tree/master/tests) folder to see some examples (in particular the aes_tst.c file).
 
 # ATAES132A
 Inside the RiddleAndCode secure element, one can find the ATAES132A chip. This library provides functions to interact with it. For extensive information about the chip and its configuration please check [ATAES132A](http://ww1.microchip.com/downloads/en/DeviceDoc/ATAES132A-Data-Sheet-40002023A.pdf).
