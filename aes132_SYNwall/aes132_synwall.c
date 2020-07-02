@@ -1,9 +1,14 @@
 
 /*
  * 
+ *  To compile with ASAN:
+ *
  *  gcc aes132_synwall.c -o aes132_synwall -g -Wall -fsanitize=address -I ../include/ 
  *                 ../build/src/libataes.a
  *  LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libasan.so.5 ./aes132_synwall -a
+ *
+ *  ***WARNING***
+ *  This is a PoC, not production code, so don't use it as it is
  *
  */
 
