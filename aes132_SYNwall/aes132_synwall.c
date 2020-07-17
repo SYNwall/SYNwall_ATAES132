@@ -256,7 +256,7 @@ uint8_t load_PSK(void)
     aes132_encread_decrypt(SYNkey00,mem_addr,(uint8_t *) psk + mem_addr,0);
     chunck_len = strlen(psk+mem_addr);
   }
-  psk[mem_addr + chunck_len - 1] = '\0';
+  psk[mem_addr + chunck_len] = '\0';
 
   // Load the PSK in the SYNwall module
   if ( inject_PSK(psk, strlen(psk)) == EXIT_FAILURE )
